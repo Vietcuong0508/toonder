@@ -64,7 +64,9 @@ class InfoDatum {
         this.imgUrl,
         this.bookUuid,
         this.likeNo,
+        this.totalLikeNo,
         this.categoryList,
+        this.categoryName,
         this.bookId,
         this.updateStatus,
         this.viewNo,
@@ -83,7 +85,9 @@ class InfoDatum {
     String? imgUrl;
     String? bookUuid;
     int? likeNo;
+    int? totalLikeNo;
     String? categoryList;
+    String? categoryName;
     int? bookId;
     int? updateStatus;
     int? viewNo;
@@ -101,8 +105,9 @@ class InfoDatum {
         bookThumb: json["BookThumb"],
         imgUrl: json["imgUrl"],
         bookUuid: json["BookUUID"],
+        categoryName: json["CategoryName"] ?? json["CategoryList"],
         likeNo: json["LikeNo"],
-        categoryList: json["CategoryList"],
+        totalLikeNo: json["TotalLikeNo"],
         bookId: json["BookId"],
         updateStatus: json["updateStatus"],
         viewNo: json["ViewNo"],
@@ -123,6 +128,7 @@ class InfoDatum {
         "BookUUID": bookUuid,
         "LikeNo": likeNo,
         "CategoryList": categoryList,
+        "CategoryName": categoryName,
         "BookId": bookId,
         "updateStatus": updateStatus,
         "ViewNo": viewNo,

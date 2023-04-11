@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF1A182E),
       bottomNavigationBar: SizedBox(
         height: 89,
         child: ClipRRect(
@@ -77,123 +77,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   label: bottomText[i]),
-              // BottomNavigationBarItem(
-              //     activeIcon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         gradient: const LinearGradient(
-              //             colors: [Color(0xFFEF590C), Color(0xFFD030D6)]),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Explore.svg',
-              //         // ignore: deprecated_member_use
-              //         color: Colors.white,
-              //         height: 24,
-              //       ),
-              //     ),
-              //     icon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         color: const Color(0xFF1A182E),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Explore.svg',
-              //         height: 24,
-              //       ),
-              //     ),
-              //     label: "Khám phá"),
-              // BottomNavigationBarItem(
-              //     activeIcon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         gradient: const LinearGradient(
-              //             colors: [Color(0xFFEF590C), Color(0xFFD030D6)]),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Hot.svg',
-              //         height: 24,
-              //         color: Colors.white,
-              //       ),
-              //     ),
-              //     icon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         color: const Color(0xFF1A182E),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Hot.svg',
-              //         height: 24,
-              //       ),
-              //     ),
-              //     label: "Có gì HOT"),
-              // BottomNavigationBarItem(
-              //     activeIcon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         gradient: const LinearGradient(
-              //             colors: [Color(0xFFEF590C), Color(0xFFD030D6)]),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Book.svg',
-              //         height: 24,
-              //         color: Colors.white,
-              //       ),
-              //     ),
-              //     icon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.all(12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         color: const Color(0xFF1A182E),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/Book.svg',
-              //         height: 24,
-              //         // ignore: deprecated_member_use
-              //         color: const Color(0xFF677080),
-              //       ),
-              //     ),
-              //     label: "Tủ Sách"),
-              // BottomNavigationBarItem(
-              //     activeIcon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.only(
-              //           right: 15, top: 12, left: 15, bottom: 12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         gradient: const LinearGradient(
-              //             colors: [Color(0xFFEF590C), Color(0xFFD030D6)]),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/My.svg',
-              //         color: Colors.white,
-              //         height: 24,
-              //       ),
-              //     ),
-              //     icon: Container(
-              //       margin: const EdgeInsets.only(bottom: 3),
-              //       padding: const EdgeInsets.only(
-              //           right: 15, top: 12, left: 15, bottom: 12),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(50),
-              //         color: const Color(0xFF1A182E),
-              //       ),
-              //       child: SvgPicture.asset(
-              //         'assets/icons/My.svg',
-              //         height: 24,
-              //       ),
-              //     ),
-              //     label: "Của tôi")
             ],
           ),
         ),
