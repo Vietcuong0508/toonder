@@ -1,19 +1,30 @@
 name: toonder_app
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: ">=2.19.4 <3.0.0"
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  flutter_bloc: any
+  equatable: any
+  dio: any
   flutter_svg: ^2.0.4
   http: ^0.13.5
-  carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.0.1
   hexcolor: ^3.0.1
+  cached_network_image:
+  intl: ^0.17.0
+  sticky_headers: ^0.3.0+2
+  device_preview: ^1.1.0
+  scrollable_positioned_list: any
+  flutter_switch: any
+  image_picker: any
+  flutter_staggered_grid_view: ^0.4.0
+  sliver_tools: ^0.2.10
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +34,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/images/

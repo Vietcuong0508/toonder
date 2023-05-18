@@ -1,15 +1,8 @@
 import 'dart:convert';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:toonder_app/data/book.dart';
-import 'package:toonder_app/data/home_banner.dart';
-import 'package:toonder_app/screen/Home/home_body.dart';
-import 'package:toonder_app/src/constants/global_color.dart';
-import 'package:toonder_app/utils/theme.dart';
+import 'package:toonder_app/page/home/banner.dart';
+import 'package:toonder_app/page/home/list_book.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,24 +12,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final apiUrl = 'https://api.toonder.vn/wecomi/api/book/getbanner';
-  final apiBookUrl =
-      'https://api.toonder.vn/wecomi/api/book/mainhome?account_id=50231';
   int activeIndex = 0;
-  final controller = CarouselController();
-  Books? book;
   @override
   void initState() {
     super.initState();
-    books();
-  }
-
-  Future<void> books() async {
-    book = await fetchBooks();
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width / 375;
     return Scaffold(
       backgroundColor: const Color(0xFF1A182E),
       extendBodyBehindAppBar: true,
@@ -51,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
         //   child: IconButton(
         //     splashRadius: 18,
         //     iconSize: 16,
-        //     onPressed: () {},
+        //     onPressed: () {
+        //       Scaffold.of(context).openDrawer();
+        //     },
         //     icon: const Icon(Icons.menu),
         //   ),
         // ),
@@ -84,59 +70,19 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      drawer: Padding(
-        padding: const EdgeInsets.only(
-          top: 34,
-          bottom: 5,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-                width: 2, color: const Color.fromARGB(83, 255, 255, 255)),
-            borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30)),
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30)),
-            child: Drawer(
-              shadowColor: Colors.white,
-              backgroundColor: const Color(0xFF1A182E),
-              child: ListView(
-                children: const <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text('Messages'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.account_circle),
-                    title: Text('Profile'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Settings'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      drawer: const _Drawer(),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
-            bookBanner(),
-            book == null
-                ? const CircularProgressIndicator()
-                : ListTitle(book: book),
+            const BannerPage(),
+            const ListBook(),
             Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
+                height: width * 40,
+                width: width * 298,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   gradient: const LinearGradient(
@@ -146,11 +92,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'KHÁM PHÁ THÊM',
-                    style: TextStyle(color: Colors.white),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent),
+                    child: const Text(
+                      'KHÁM PHÁ THÊM',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                    ),
                   ),
                 ),
               ),
@@ -160,110 +115,177 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
 
-  FutureBuilder<List<BookBanner>> bookBanner() {
-    return FutureBuilder<List<BookBanner>>(
-      future: fetchBanners(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<BookBanner> bookBanner = snapshot.data as List<BookBanner>;
-          return Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              CarouselSlider.builder(
-                carouselController: controller,
-                options: CarouselOptions(
-                  autoPlay: true,
-                  aspectRatio: 1,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  height: MediaQuery.of(context).size.height * 0.74,
-                  viewportFraction: 1,
-                  enableInfiniteScroll: false,
-                  onPageChanged: (index, reason) =>
-                      setState(() => activeIndex = index),
-                ),
-                itemCount: bookBanner.length,
-                itemBuilder: (context, index, realIndex) {
-                  final urlImage = bookBanner[index].imgUrl;
-                  return SizedBox(
-                    width: double.infinity,
-                    child: buildImage(urlImage, index),
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: buildIndicator(bookBanner.length),
-              ),
-            ],
-          );
-        }
-        if (snapshot.hasError) {
-          // ignore: avoid_print
-          print(snapshot.error.toString());
-          return const Text('error');
-        }
-        return const CircularProgressIndicator();
-      },
-    );
-  }
+class _Drawer extends StatelessWidget {
+  const _Drawer();
 
-  Future<List<BookBanner>> fetchBanners() async {
-    var response = await http.get(Uri.parse(apiUrl));
-    // print(response.toString());
-    return (json.decode(response.body)['info'] as List)
-        .map((e) => BookBanner.fromJson(e))
-        .toList();
-  }
-
-  Widget buildImage(String urlImage, int index) => Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: NetworkImage(
-                urlImage,
-              ),
-              fit: BoxFit.cover),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).padding.top, 0,
+          MediaQuery.of(context).padding.bottom),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: DrawerHeader(
+        padding: const EdgeInsets.all(0),
+        decoration: const BoxDecoration(
+          color: Color(0xFF1A182E),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(15),
+            bottomRight: Radius.circular(15),
+          ),
+          boxShadow: [
+            BoxShadow(color: Colors.white, blurRadius: 3),
+          ],
         ),
-        child: Container(
-          height: 10,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.center,
-              end: Alignment.bottomCenter,
-              colors: [
-                GlobalColors.bgColor.withOpacity(0.1),
-                GlobalColors.bgColor.withOpacity(1)
+        child: ClipRRect(
+          borderRadius:
+              const BorderRadius.only(bottomRight: Radius.circular(15)),
+          child: Drawer(
+            backgroundColor: const Color(0xFF1A182E),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    'Cường Trần',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.125,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 255, 89, 0),
+                                width: 0.7),
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromARGB(255, 35, 33, 60)),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            iconColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text('Số dư xu',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16)),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: const [
+                                    Text('1',
+                                        style: TextStyle(color: Colors.white)),
+                                    Icon(Icons.abc)
+                                  ],
+                                )
+                              ]),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.125,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: const Color.fromARGB(255, 255, 89, 0),
+                                width: 0.7),
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color.fromARGB(255, 35, 33, 60)),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            iconColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Số dư điểm',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16)),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: const [
+                                    Text('1',
+                                        style: TextStyle(color: Colors.white)),
+                                    Icon(Icons.abc_outlined)
+                                  ],
+                                )
+                              ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.rocket_launch_outlined),
+                  title: const Text('Nhiệm vụ nhận điểm'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.diamond_outlined),
+                  title: const Text('Profile'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.account_circle),
+                  title: const Text('Profile'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.money_off_csred_outlined),
+                  title: const Text('Profile'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.co_present),
+                  title: const Text('Profile'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  leading: const Icon(Icons.settings_rounded),
+                  title: const Text('Cài đặt'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ],
             ),
           ),
         ),
-      );
-
-  Widget buildIndicator(int length) => AnimatedSmoothIndicator(
-        activeIndex: activeIndex,
-        count: length,
-        onDotClicked: animateToSlide,
-        effect: ScrollingDotsEffect(
-          dotWidth: 10,
-          dotHeight: 10,
-          dotColor: Colors.white,
-          activeDotColor: GlobalColors.orangeColor,
-        ),
-      );
-
-  void animateToSlide(int index) => controller.animateToPage(index);
-
-  Future<Books?> fetchBooks() async {
-    final Response response;
-    response = await http.get(Uri.parse(apiBookUrl));
-    final decode = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      // print(decode.toString());
-      return Books.fromJson(decode);
-    } else {
-      return null;
-    }
+      ),
+    );
   }
 }
